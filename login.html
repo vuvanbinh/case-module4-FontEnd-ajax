@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+
+<link href="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+<script src="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<head>
+    <meta charset="UTF-8">
+    <title>LOGIN</title>
+    <link rel="stylesheet" href="indexCss.css">
+
+</head>
+<body>
+
+<div id="login">
+    <h3 class="text-center text-white pt-5">Login form</h3>
+    <div class="container">
+        <div id="login-row" class="row justify-content-center align-items-center">
+            <div id="login-column" class="col-md-6">
+                <div id="login-box" class="col-md-12">
+                    <form id="login-form" class="form" action="" method="post">
+                        <h3 class="text-center text-info">Login</h3>
+                        <div class="form-group">
+                            <span id="error" style="color: red"></span>
+                        </div>
+                        <div class="form-group">
+                            <label for="email" class="text-info">Email:</label><br>
+                            <input type="text" name="email" id="email" class="form-control">
+                        </div>
+                        <div class="form-group">
+                            <label for="password" class="text-info">Password:</label><br>
+                            <input type="password" name="password" id="password" class="form-control">
+                        </div>
+                        <div class="form-group">
+                            <label for="remember-me" class="text-info"><span>Remember me</span> <span><input
+                                    id="remember-me" name="remember-me" type="checkbox"></span></label><br>
+                            <input type="submit" name="submit" id="btn-login" class="btn btn-info btn-md" value="submit">
+                        </div>
+
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+</body>
+<script>
+    $(document).ready(function () {
+        let saiData = {
+            message : "sai"
+        }
+        let signInForm = {};
+        $('#btn-login').click(function () {
+            signInForm.email = $('#email').val();
+            signInForm.password = $('#password').val();
+            let signInFormOBJ = JSON.stringify(signInForm);
+            $.ajax({
+                url: 'http://localhost:8080/signin',
+                method: 'POST',
+                data: signInFormOBJ,
+                contentType: 'application/json; charset=utf8',
+                success: function (data) {
+                    if (JSON.stringify(data)===JSON.stringify(saiData)){
+                        document.getElementById("error").innerText="Nhập email hoặc mật khẩu, mời nhập lại";
+                    }else {
+                        window.sessionStorage.setItem('TOKEN_KEY', data.token);
+                        window.sessionStorage.setItem('NAME_KEY', data.fullName);
+                        window.sessionStorage.setItem('AVATAR_KEY', data.avatar);
+                        window.sessionStorage.setItem('ROLE_KEY', JSON.stringify(data.roles))
+
+                        for (let i = 0; i < data.roles.length; i++) {
+                            let role = data.roles[i].authority;
+                            switch (role){
+                                case "ADMIN" :
+                                    window.location.href = 'admin.html';
+                                    break;
+                                case "STUDENT" :
+                                    window.location.href = 'student.html';
+                                    break;
+                                case "MINISTRY" :
+                                    window.location.href = 'ministry.html';
+                                    break;
+                                default :
+                                    window.location.href = 'coach.html';
+
+                            }
+                        }
+
+                    }
+                }
+            })
+            event.preventDefault();
+        })
+    })
+</script>
+</html>

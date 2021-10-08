@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<h1>Ministry</h1>
+
+
+</body>
+<script type="text/javascript">
+    $(document).ready(function (){
+        let roles= JSON.parse(window.sessionStorage.getItem('ROLE_KEY'));
+        if (roles===null){
+            window.location.href = 'login.html';
+        }
+        for (let i = 0; i < roles.length; i++) {
+            if (roles[i].authority!=='MINISTRY'){
+                window.location.href = 'login.html';
+                return
+            }
+        }
+    })
+</script>
+</html>

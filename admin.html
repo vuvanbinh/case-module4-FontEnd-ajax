@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<h1>Admin</h1>
+
+<a href="" onclick="usersForm()">Add new Users</a>
+<a href="" onclick="classesForm()">Add new Class</a>
+<a href="" onclick="subjectForm()">Add new Subject</a>
+
+
+<table>
+    <tr>
+        <td>Class name:</td>
+        <td><input type="text" id="name"></td>
+    </tr>
+
+</table>
+
+
+<div>
+    <span style="color: red" id="success"></span>
+</div>
+<div id="form">
+</div>
+
+</body>
+<script type="text/javascript">
+    $(document).ready(function () {
+        let roles = JSON.parse(window.sessionStorage.getItem('ROLE_KEY'));
+        if (roles === null) {
+            window.location.href = 'login.html';
+        }
+        for (let i = 0; i < roles.length; i++) {
+            if (roles[i].authority !== 'ADMIN') {
+                window.location.href = 'login.html';
+                return
+            }
+        }
+        $.ajax({
+            url: 'http://localhost:8080/findAllClass',
+            type: "GET",
+            success:function (data){
+                let result="<option value='0'>--Chon--</option>";
+                for (let i = 0; i < data.length; i++) {
+                    result+=`<option value="${data[i].id}">${data[i].name}</option>`
+                }
+                document.getElementById("classesId").innerHTML=result;
+            }
+        })
+
+    })
+
+
+    function usersForm() {
+        event.preventDefault()
+        document.getElementById("form").innerHTML =
+            `<table>
+    <tr>
+        <td>FullName:</td>
+        <td><input type="text" id="fullName"></td>
+    </tr>
+    <tr>
+        <td>Email:</td>
+        <td><input type="text" id="email"></td>
+    </tr>
+    <tr>
+        <td>Password:</td>
+        <td><input type="text" id="password"></td>
+    </tr>
+    <tr>
+        <td>Phone Number:</td>
+        <td><input type="number" id="phoneNumber"></td>
+    </tr>
+    <tr>
+        <td>Address:</td>
+        <td><input type="text" id="address"></td>
+    </tr>
+    <tr>
+        <td>Date of birth:</td>
+        <td><input type="date" id="dob"></td>
+    </tr>
+
+    <tr>
+        <td>Status:</td>
+        <td>
+            <select id="status">
+                <option >--Chon--</option>
+                <option value="Dang hoc">Dang hoc</option>
+                <option value="Dang nghi">Da nghi</option>
+                <option value="Dang hoc">Bo hoc</option>
+            </select>
+        </td>
+    </tr>
+    <tr>
+        <td>Role:</td>
+        <td>
+            <select  id="role">
+                <option value="coach">Coach</option>
+                <option value="ministry">Ministry</option>
+                <option value="student">Student</option>
+            </select>
+        </td>
+    </tr>
+    <tr>
+        <td>Avatar:</td>
+        <td><input type="text" id="avatar"></td>
+    </tr>
+    <tr>
+        <td>Class:</td>
+        <td>
+            <select name="class" id="classesId">
+            </select>
+        </td>
+    </tr>
+    <tr>
+        <td></td>
+        <td><button onclick="addNewUser()">Submit</button></td>
+    </tr>
+</table>`
+    }
+
+    function classesForm () {
+        event.preventDefault()
+        document.getElementById("form").innerHTML =''
+    }
+    function addNewUser(){
+        let fullName = $('#fullName').val();
+        let email = $('#email').val();
+        let passWord = $('#password').val();
+        let phoneNumber = $('#phoneNumber').val();
+        let address = $('#address').val();
+        let dob = $('#dob').val();
+        let status = $('#status').val();
+        let avatar = $('#avatar').val();
+        let role = $('#role').val();
+        let roles = [];
+        switch (role){
+            case "student":{
+                roles=["student"];
+                break;
+            }
+            case "ministry":{
+                roles=["ministry"];
+                break;
+            }
+            case "coach":{
+                roles=["coach"];
+                break;
+            }
+        }
+        let classesId = $('#classesId').val();
+        if (classesId===0){classesId=null}
+
+
+        let signUpForm={
+            fullName:fullName,
+            email:email,
+            password:passWord,
+            phoneNumber:phoneNumber,
+            address:address,
+            dob:dob,
+            status:status,
+            avatar:avatar,
+            roles:roles,
+            classesId:classesId
+        }
+
+        let success = {message : "Create success!"}
+        $.ajax({
+            url: 'http://localhost:8080/signup',
+            method: 'POST',
+            data: JSON.stringify(signUpForm),
+            contentType: 'application/json; charset=utf8',
+            success: function (data){
+                if (JSON.stringify(data)=== JSON.stringify(success)){
+                    document.getElementById("success").innerHTML="Dang ky thanh cong";
+                }else {
+                    document.getElementById("success").innerHTML="Dang ky khong thanh cong thanh cong, email da ton tai";
+                }
+
+            }
+        })
+
+    }
+</script>
+</html>
