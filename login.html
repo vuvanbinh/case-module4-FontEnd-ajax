@@ -58,7 +58,7 @@
             signInForm.password = $('#password').val();
             let signInFormOBJ = JSON.stringify(signInForm);
             $.ajax({
-                url: 'http://localhost:8080/signin',
+                url: 'http://localhost:8080/user/signin',
                 method: 'POST',
                 data: signInFormOBJ,
                 contentType: 'application/json; charset=utf8',
@@ -67,6 +67,7 @@
                         document.getElementById("error").innerText="Nhập email hoặc mật khẩu, mời nhập lại";
                     }else {
                         window.sessionStorage.setItem('TOKEN_KEY', data.token);
+                        window.sessionStorage.setItem('ID_KEY', data.id);
                         window.sessionStorage.setItem('NAME_KEY', data.fullName);
                         window.sessionStorage.setItem('AVATAR_KEY', data.avatar);
                         window.sessionStorage.setItem('ROLE_KEY', JSON.stringify(data.roles))

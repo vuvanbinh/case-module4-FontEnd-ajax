@@ -12,22 +12,8 @@
 <a href="" onclick="classesForm()">Add new Class</a>
 <a href="" onclick="subjectForm()">Add new Subject</a>
 
-
-<table>
-    <tr>
-        <td>Class name:</td>
-        <td><input type="text" id="name"></td>
-    </tr>
-
-</table>
-
-
-<div>
-    <span style="color: red" id="success"></span>
-</div>
 <div id="form">
 </div>
-
 </body>
 <script type="text/javascript">
     $(document).ready(function () {
@@ -41,25 +27,15 @@
                 return
             }
         }
-        $.ajax({
-            url: 'http://localhost:8080/findAllClass',
-            type: "GET",
-            success:function (data){
-                let result="<option value='0'>--Chon--</option>";
-                for (let i = 0; i < data.length; i++) {
-                    result+=`<option value="${data[i].id}">${data[i].name}</option>`
-                }
-                document.getElementById("classesId").innerHTML=result;
-            }
-        })
-
     })
-
 
     function usersForm() {
         event.preventDefault()
         document.getElementById("form").innerHTML =
-            `<table>
+            `<div>
+    <span style="color: red" id="success"></span>
+</div>
+<table>
     <tr>
         <td>FullName:</td>
         <td><input type="text" id="fullName"></td>
@@ -122,13 +98,20 @@
         <td><button onclick="addNewUser()">Submit</button></td>
     </tr>
 </table>`
+        $.ajax({
+            url: 'http://localhost:8080/classes',
+            type: "GET",
+            success: function (data) {
+                let result = "<option value='0'>--Chon--</option>";
+                for (let i = 0; i < data.length; i++) {
+                    result += `<option value="${data[i].id}">${data[i].name}</option>`
+                }
+                document.getElementById("classesId").innerHTML = result;
+            }
+        })
     }
 
-    function classesForm () {
-        event.preventDefault()
-        document.getElementById("form").innerHTML =''
-    }
-    function addNewUser(){
+    function addNewUser() {
         let fullName = $('#fullName').val();
         let email = $('#email').val();
         let passWord = $('#password').val();
@@ -139,53 +122,133 @@
         let avatar = $('#avatar').val();
         let role = $('#role').val();
         let roles = [];
-        switch (role){
-            case "student":{
-                roles=["student"];
+        switch (role) {
+            case "student": {
+                roles = ["student"];
                 break;
             }
-            case "ministry":{
-                roles=["ministry"];
+            case "ministry": {
+                roles = ["ministry"];
                 break;
             }
-            case "coach":{
-                roles=["coach"];
+            case "coach": {
+                roles = ["coach"];
                 break;
             }
         }
         let classesId = $('#classesId').val();
-        if (classesId===0){classesId=null}
-
-
-        let signUpForm={
-            fullName:fullName,
-            email:email,
-            password:passWord,
-            phoneNumber:phoneNumber,
-            address:address,
-            dob:dob,
-            status:status,
-            avatar:avatar,
-            roles:roles,
-            classesId:classesId
+        if (classesId === 0) {
+            classesId = null
         }
 
-        let success = {message : "Create success!"}
+
+        let signUpForm = {
+            fullName: fullName,
+            email: email,
+            password: passWord,
+            phoneNumber: phoneNumber,
+            address: address,
+            dob: dob,
+            status: status,
+            avatar: avatar,
+            roles: roles,
+            classesId: classesId
+        }
+
+        let success = {message: "Create success!"}
         $.ajax({
-            url: 'http://localhost:8080/signup',
+            url: 'http://localhost:8080/user/signup',
             method: 'POST',
             data: JSON.stringify(signUpForm),
             contentType: 'application/json; charset=utf8',
-            success: function (data){
-                if (JSON.stringify(data)=== JSON.stringify(success)){
-                    document.getElementById("success").innerHTML="Dang ky thanh cong";
-                }else {
-                    document.getElementById("success").innerHTML="Dang ky khong thanh cong thanh cong, email da ton tai";
+            success: function (data) {
+                if (JSON.stringify(data) === JSON.stringify(success)) {
+                    document.getElementById("success").innerHTML = "Đăng ký thành công";
+                } else {
+                    document.getElementById("success").innerHTML = "Đăng ký không thành công tên user đã tồn tại";
                 }
 
             }
         })
 
     }
+
+
+    function classesForm() {
+        event.preventDefault()
+        document.getElementById("form").innerHTML =
+            `
+<div>
+    <span style="color: red" id="success"></span>
+</div><table>
+    <tr>
+        <td>Class name:</td>
+        <td><input type="text" id="name"></td>
+    </tr>
+    <tr>
+        <td></td>
+        <td><button type="submit" onclick="addNewClasses()">Submit</button></td>
+    </tr>
+</table>
+`
+    }
+    function addNewClasses(){
+        let name = $('#name').val();
+        let classes = {name:name}
+
+        let success = {message: "Create success!"}
+        $.ajax({
+            url: 'http://localhost:8080/classes/create',
+            method: 'POST',
+            data: JSON.stringify(classes),
+            contentType: 'application/json; charset=utf8',
+            success: function (data) {
+                if (JSON.stringify(data) === JSON.stringify(success)) {
+                    document.getElementById("success").innerHTML = "Đăng ký thành công";
+                } else {
+                    document.getElementById("success").innerHTML = "Đăng ký không thành công tên lớp học đã tồn tại";
+                }
+            }
+        })
+    }
+
+function subjectForm() {
+        event.preventDefault()
+        document.getElementById("form").innerHTML =
+            `
+<div>
+    <span style="color: red" id="success"></span>
+</div><table>
+    <tr>
+        <td>Subject name:</td>
+        <td><input type="text" id="name"></td>
+    </tr>
+    <tr>
+        <td></td>
+        <td><button type="submit" onclick="addNewSubject()">Submit</button></td>
+    </tr>
+</table>
+`
+    }
+    function addNewSubject(){
+        let name = $('#name').val();
+        let subject = {name:name}
+
+        let success = {message: "Create success!"}
+        $.ajax({
+            url: 'http://localhost:8080/subject/create',
+            method: 'POST',
+            data: JSON.stringify(subject),
+            contentType: 'application/json; charset=utf8',
+            success: function (data) {
+                if (JSON.stringify(data) === JSON.stringify(success)) {
+                    document.getElementById("success").innerHTML = "Đăng ký thành công";
+                } else {
+                    document.getElementById("success").innerHTML = "Đăng ký không thành công tên môn học đã tồn tại";
+                }
+            }
+        })
+    }
+
 </script>
 </html>
