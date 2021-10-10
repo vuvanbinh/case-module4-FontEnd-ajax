@@ -8,7 +8,6 @@
 </head>
 <body>
 <h1>Student</h1>
-
 <div style="text-align: right; margin-right: 50px ">
     <div style="margin-right: -17px">
         <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTGkvHnw-e8xkeN27LPJn5JJvw4XbIgOM8OEw&usqp=CAU"
@@ -23,11 +22,26 @@
 </div>
 
 
+<a href="" onclick="showTuitionFeeTable()">Bảng học phí</a>,
+<a href="" onclick="showGradeTable()">Bảng điểm</a>
+
+<div id="result"></div>
+
+
+<!--<table>-->
+<!--    <tr>-->
+<!--        <th>Đợt đóng</th>-->
+<!--        <th>Ngày đóng</th>-->
+<!--        <th>Tình trạng</th>-->
+<!--        <th>Số tiền</th>-->
+<!--    </tr>-->
+<!--    <tr>-->
+
+<!--    </tr>-->
+<!--</table>-->
 
 
 
-
-<a href="admin.html">ADMIN</a>
 
 
 </body>
@@ -47,6 +61,81 @@
             }
         }
     })
+
+    function showTuitionFeeTable(){
+        event.preventDefault()
+        let id = window.sessionStorage.getItem('ID_KEY');
+        $.ajax({
+            url: 'http://localhost:8080/tuitionFee/findAllByUsersId/'+id,
+            type: "GET",
+            success: function (data) {
+                let result =
+                    "<table width='65%' border='1px'>" +
+                    "<thead>" +
+                    "<tr>\n" +
+                    "        <th>STT</th>\n" +
+                    "        <th>Đợt đóng</th>\n" +
+                    "        <th>Ngày đóng</th>\n" +
+                    "        <th>Tình trạng</th>\n" +
+                    "        <th>Số tiền</th>\n" +
+                    "    </tr>\n" +
+                    "    </thead>" +
+                    "    <tbody>";
+                $.each(data,function (index,value){
+                    result +=
+                        `<tr>
+                        <td>${index+1}</td>
+                        <td>${value.dotDog}</td>
+                        <td>${value.dayDog}</td>
+                        <td>${value.status}</td>
+                        <td>${index.money}</td>
+                        </tr>`
+                })
+                result+= "</tbody> " +
+                    "</table>";
+                document.getElementById("result").innerHTML = result;
+            }
+        })
+    }
+
+    function showGradeTable(){
+        event.preventDefault()
+        let id = window.sessionStorage.getItem('ID_KEY');
+        $.ajax({
+            url: 'http://localhost:8080/grade/findAllByUsersId/'+id,
+            type: "GET",
+            success: function (data) {
+                let result =
+                    "<table width='65%' border='1px'>" +
+                    "<thead>" +
+                    "<tr>\n" +
+                    "        <th>STT</th>\n" +
+                    "        <th>Môn học</th>\n" +
+                    "        <th>Đợt thi</th>\n" +
+                    "        <th>Lý thuyết</th>\n" +
+                    "        <th>Thực hành</th>\n" +
+                    "        <th>Điểm trung bình</th>\n" +
+                    "    </tr>\n" +
+                    "    </thead>" +
+                    "    <tbody>";
+                $.each(data,function (index,value){
+                    result +=
+                        `<tr>
+                        <td>${index+1}</td>
+                        <td>${value.subject.name}</td>
+                        <td>${value.exam}</td>
+                        <td>${value.theory}</td>
+                        <td>${value.practice}</td>
+                        <td>${((index.theory+value.practice)/2)}</td>
+                        </tr>`
+                })
+                result+= "</tbody> " +
+                    "</table>";
+                document.getElementById("result").innerHTML = result;
+            }
+        })
+    }
+
 
 
 

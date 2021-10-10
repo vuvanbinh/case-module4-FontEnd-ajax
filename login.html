@@ -13,7 +13,7 @@
 </head>
 <body>
 <div id="login">
-    <h3 class="text-center text-white pt-5">Login form</h3>
+    <h2 class="text-center text-white pt-5">Quản lý trung tâm cai nghiện</h2>
     <div class="container">
         <div id="login-row" class="row justify-content-center align-items-center">
             <div id="login-column" class="col-md-6">
@@ -34,9 +34,9 @@
                         <div class="form-group">
                             <label for="remember-me" class="text-info"><span>Remember me</span> <span><input
                                     id="remember-me" name="remember-me" type="checkbox"></span></label><br>
-                            <input type="submit" name="submit" id="btn-login" class="btn btn-info btn-md" value="submit">
+                            <input type="submit" name="submit" id="btn-login" class="btn btn-info btn-md"
+                                   value="submit">
                         </div>
-
                     </form>
                 </div>
             </div>
@@ -49,7 +49,7 @@
 <script>
     $(document).ready(function () {
         let saiData = {
-            message : "sai"
+            message: "sai"
         }
         let signInForm = {};
         $('#btn-login').click(function () {
@@ -63,18 +63,17 @@
                 data: signInFormOBJ,
                 contentType: 'application/json; charset=utf8',
                 success: function (data) {
-                    if (JSON.stringify(data)===JSON.stringify(saiData)){
-                        document.getElementById("error").innerText="Nhập email hoặc mật khẩu, mời nhập lại";
-                    }else {
+                    if (JSON.stringify(data) === JSON.stringify(saiData)) {
+                        document.getElementById("error").innerText = "Nhập email hoặc mật khẩu, mời nhập lại";
+                    } else {
                         window.sessionStorage.setItem('TOKEN_KEY', data.token);
                         window.sessionStorage.setItem('ID_KEY', data.id);
                         window.sessionStorage.setItem('NAME_KEY', data.fullName);
                         window.sessionStorage.setItem('AVATAR_KEY', data.avatar);
                         window.sessionStorage.setItem('ROLE_KEY', JSON.stringify(data.roles))
-
                         for (let i = 0; i < data.roles.length; i++) {
                             let role = data.roles[i].authority;
-                            switch (role){
+                            switch (role) {
                                 case "ADMIN" :
                                     window.location.href = 'admin.html';
                                     break;
@@ -96,15 +95,16 @@
             event.preventDefault();
         })
     })
-    function validateForm()  {
+
+    function validateForm() {
         var u = document.getElementById("email").value;
         var p = document.getElementById("password").value;
 
-        if(u== "") {
+        if (u == "") {
             alert("Please enter your Username");
             return false;
         }
-        if(p == "") {
+        if (p == "") {
             alert("Please enter you Password");
             return false;
         }

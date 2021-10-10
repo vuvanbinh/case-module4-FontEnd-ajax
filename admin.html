@@ -12,7 +12,7 @@
 <div style="text-align: right; margin-right: 50px ">
     <div style="margin-right: -17px">
         <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTGkvHnw-e8xkeN27LPJn5JJvw4XbIgOM8OEw&usqp=CAU"
-             alt="" width="100"  height="100"><br>
+             alt="" width="100" height="100"><br>
     </div>
     <div>
         <span id="name" style="font-size: 20px"></span>
@@ -23,12 +23,10 @@
 </div>
 
 
-
 <a href="" onclick="usersForm()">Add new Users</a>,
 <a href="" onclick="classesForm()">Add new Class</a>,
 <a href="" onclick="subjectForm()">Add new Subject</a>,
 <a href="" onclick="tuitionFeeForm()">Add new TuitionFee</a>
-
 
 
 <div id="form">
@@ -36,8 +34,8 @@
 </body>
 <script type="text/javascript">
     $(document).ready(function () {
-        let name = window.sessionStorage.getItem('NAME_KEY')
-        document.getElementById("name").innerHTML=name;
+        let fullName = window.sessionStorage.getItem('NAME_KEY')
+        document.getElementById("name").innerHTML = fullName;
 
         let roles = JSON.parse(window.sessionStorage.getItem('ROLE_KEY'));
         if (roles === null) {
@@ -52,10 +50,9 @@
     })
 
 
-
-    function tuitionFeeForm(){
+    function tuitionFeeForm() {
         event.preventDefault();
-        document.getElementById("form").innerHTML=
+        document.getElementById("form").innerHTML =
             `<div>
     <fieldset style="width: 60%">
         <legend>Information</legend>
@@ -113,6 +110,7 @@
 </div>`
         showAllClasses()
     }
+
     function addTuitionFee() {
         event.preventDefault();
         let dotDog = $('#dotDog').val();
@@ -145,81 +143,93 @@
     }
 
 
-
     function usersForm() {
         event.preventDefault()
         document.getElementById("form").innerHTML =
-            `<div>
-    <span style="color: red" id="success"></span>
-</div>
-<table>
-    <tr>
-        <td>FullName:</td>
-        <td><input type="text" id="fullName"></td>
-    </tr>
-    <tr>
-        <td>Email:</td>
-        <td><input type="text" id="email"></td>
-    </tr>
-    <tr>
-        <td>Password:</td>
-        <td><input type="text" id="password"></td>
-    </tr>
-    <tr>
-        <td>Phone Number:</td>
-        <td><input type="number" id="phoneNumber"></td>
-    </tr>
-    <tr>
-        <td>Address:</td>
-        <td><input type="text" id="address"></td>
-    </tr>
-    <tr>
-        <td>Date of birth:</td>
-        <td><input type="date" id="dob"></td>
-    </tr>
+            `
+<div>
+    <fieldset style="width: 60%">
+        <legend>Information</legend>
+        <form action="">
+            <div>
+                <span style="color: red" id="success"></span>
+            </div>
+            <table>
+                <tr>
+                    <td>FullName:</td>
+                    <td><input type="text" id="fullName"></td>
+                </tr>
+                <tr>
+                    <td>Email:</td>
+                    <td><input type="text" id="email"></td>
+                </tr>
+                <tr>
+                    <td>Password:</td>
+                    <td><input type="text" id="password"></td>
+                </tr>
+                <tr>
+                    <td>Phone Number:</td>
+                    <td><input type="number" id="phoneNumber"></td>
+                </tr>
+                <tr>
+                    <td>Address:</td>
+                    <td><input type="text" id="address"></td>
+                </tr>
+                <tr>
+                    <td>Date of birth:</td>
+                    <td><input type="date" id="dob"></td>
+                </tr>
 
-    <tr>
-        <td>Status:</td>
-        <td>
-            <select id="status">
-                <option >--Chon--</option>
-                <option value="Đang học">Đang học</option>
-                <option value="Thôi học">Thôi học</option>
-                <option value="Đình chỉ">Đình chỉ</option>
-                <option value="Chờ chuuyển lớp">Chờ chuyển lớp</option>
-            </select>
-        </td>
-    </tr>
-    <tr>
-        <td>Role:</td>
-        <td>
-            <select  id="role">
-                <option value="coach">Coach</option>
-                <option value="admin">Admin</option>
-                <option value="ministry">Ministry</option>
-                <option value="student">Student</option>
-            </select>
-        </td>
-    </tr>
-    <tr>
-        <td>Avatar:</td>
-        <td><input type="text" id="avatar"></td>
-    </tr>
-    <tr>
-        <td>Class:</td>
-        <td>
-            <select name="class" id="classes" multiple="multiple">
-            </select>
-        </td>
-    </tr>
-    <tr>
-        <td></td>
-        <td><button onclick="addNewUser()">Submit</button></td>
-    </tr>
-</table>`
+                <tr>
+                    <td>Status:</td>
+                    <td>
+                        <select id="status">
+                            <option>--Chon--</option>
+                            <option value="Đang học">Đang học</option>
+                            <option value="Thôi học">Thôi học</option>
+                            <option value="Đình chỉ">Đình chỉ</option>
+                            <option value="Chờ chuuyển lớp">Chờ chuyển lớp</option>
+                        </select>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Role:</td>
+                    <td>
+                        <select id="role">
+                            <option value="coach">Coach</option>
+                            <option value="admin">Admin</option>
+                            <option value="ministry">Ministry</option>
+                            <option value="student">Student</option>
+                        </select>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Avatar:</td>
+                    <td><input type="text" id="avatar"></td>
+                </tr>
+                <tr>
+                    <td>Class:</td>
+                    <td>
+                        <select name="class" id="classes" multiple="multiple">
+                        </select>
+                    </td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td>
+                        <button onclick="addNewUser()">Submit</button>
+                    </td>
+                </tr>
+            </table>
+        </form>
+    </fieldset>
+</div>
+            `
         showAllClasses()
     }
+
     function addNewUser() {
+        event.preventDefault();
         let fullName = $('#fullName').val();
         let email = $('#email').val();
         let passWord = $('#password').val();
@@ -234,6 +244,10 @@
         switch (role) {
             case "student": {
                 roles = ["student"];
+                break;
+            }
+            case "admin": {
+                roles = ["admin"];
                 break;
             }
             case "ministry": {
@@ -284,29 +298,39 @@
     }
 
 
-
     function classesForm() {
         event.preventDefault()
         document.getElementById("form").innerHTML =
             `
 <div>
-    <span style="color: red" id="success"></span>
+    <fieldset style="width: 60%">
+        <legend>Information</legend>
+        <form action="">
+            <div>
+                <span style="color: red" id="success"></span>
+            </div>
+            <table>
+                <tr>
+                    <td>Class name:</td>
+                    <td><input type="text" id="classesName"></td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td>
+                        <button type="submit" onclick="addNewClasses()">Submit</button>
+                    </td>
+                </tr>
+            </table>
+        </form>
+    </fieldset>
 </div>
-<table>
-    <tr>
-        <td>Class name:</td>
-        <td><input type="text" id="classesName"></td>
-    </tr>
-    <tr>
-        <td></td>
-        <td><button type="submit" onclick="addNewClasses()">Submit</button></td>
-    </tr>
-</table>
-`
+            `
     }
-    function addNewClasses(){
+
+    function addNewClasses() {
+        event.preventDefault();
         let name = $('#classesName').val();
-        let classes = {name:name}
+        let classes = {name: name}
 
         let success = {message: "Create success!"}
         $.ajax({
@@ -325,28 +349,39 @@
     }
 
 
-
     function subjectForm() {
         event.preventDefault()
         document.getElementById("form").innerHTML =
             `
 <div>
-    <span style="color: red" id="success"></span>
-</div><table>
-    <tr>
-        <td>Subject name:</td>
-        <td><input type="text" id="subjectName"></td>
-    </tr>
-    <tr>
-        <td></td>
-        <td><button type="submit" onclick="addNewSubject()">Submit</button></td>
-    </tr>
-</table>
-`
+    <fieldset style="width: 60%">
+        <legend>Information</legend>
+        <form action="">
+            <div>
+                <span style="color: red" id="success"></span>
+            </div>
+            <table>
+                <tr>
+                    <td>Subject name:</td>
+                    <td><input type="text" id="subjectName"></td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td>
+                        <button type="submit" onclick="addNewSubject()">Submit</button>
+                    </td>
+                </tr>
+            </table>
+        </form>
+    </fieldset>
+</div>
+            `
     }
-    function addNewSubject(){
+
+    function addNewSubject() {
+        event.preventDefault();
         let name = $('#subjectName').val();
-        let subject = {name:name}
+        let subject = {name: name}
 
         let success = {message: "Create success!"}
         $.ajax({
@@ -366,8 +401,7 @@
     }
 
 
-
-    function logOut(){
+    function logOut() {
         event.preventDefault()
         logOutConfirm()
     }
