@@ -8,11 +8,10 @@
 <head>
     <meta charset="UTF-8">
     <title>LOGIN</title>
-    <link rel="stylesheet" href="indexCss.css">
+    <link rel="stylesheet" href="index.css">
 
 </head>
 <body>
-
 <div id="login">
     <h3 class="text-center text-white pt-5">Login form</h3>
     <div class="container">
@@ -56,6 +55,7 @@
         $('#btn-login').click(function () {
             signInForm.email = $('#email').val();
             signInForm.password = $('#password').val();
+            validateForm()
             let signInFormOBJ = JSON.stringify(signInForm);
             $.ajax({
                 url: 'http://localhost:8080/user/signin',
@@ -96,14 +96,24 @@
             event.preventDefault();
         })
     })
+    function validateForm()  {
+        var u = document.getElementById("email").value;
+        var p = document.getElementById("password").value;
+
+        if(u== "") {
+            alert("Please enter your Username");
+            return false;
+        }
+        if(p == "") {
+            alert("Please enter you Password");
+            return false;
+        }
+
+        alert("Đăng nhập thành công, Ấn Ok để đi tới web!")
+
+
+        return true;
+    }
+
 </script>
-<!--test thay doi -->
-<!--test thay doi -->
-<!--test thay doi -->
-<!--test thay doi -->
-<!--test thay doi -->
-<!--test thay doi -->
-<!--test thay doi -->
-<!--test thay doi -->
-<!--test thay doi -->
 </html>

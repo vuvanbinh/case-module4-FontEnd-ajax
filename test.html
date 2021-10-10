@@ -1,0 +1,102 @@
+<!--<!DOCTYPE html>-->
+<!--<html lang="en">-->
+<!--<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>-->
+<!--<head>-->
+<!--    <meta charset="UTF-8">-->
+<!--    <title>Title</title>-->
+<!--</head>-->
+<!--<body>-->
+
+<!--<label for="id">Chon cac lop</label>-->
+<!--<select name="" id="id" multiple="multiple">-->
+<!--    <option value="1">c1</option>-->
+<!--    <option value="2">c2</option>-->
+<!--    <option value="3">c3</option>-->
+<!--    <option value="4">c4</option>-->
+<!--    <option value="5">c5</option>-->
+<!--</select>-->
+<!--<button onclick="getId()">Get ID</button>-->
+<!--</body>-->
+
+<!--<script>-->
+<!--    function getId(){-->
+<!--       let va =$('#id').val()-->
+<!--        console.log(va);-->
+<!--    }-->
+<!--</script>-->
+<!--</html>-->
+
+
+
+<html>
+<head>
+    <title>pattern attribute</title>
+        <meta charset="UTF-8">
+
+</head>
+<body>
+
+<h2>Attribute: pattern</h2>
+
+<div style="border:1px solid #ddd; padding: 5px;">
+
+    <form name="myForm">
+        Email:
+        <input type="text" name = "password"
+               pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$"
+               title="Nhập lại mail cho đúng định dạng"/>
+        <br>
+        <input type="password" name = "password" pattern=".{5,}"
+               title="Mat khau phai 5 ky tu tro len" />
+
+        <br/><br/>
+        <button type="submit">Submit</button>
+    </form>
+
+</div>
+
+</body>
+</html>
+
+
+
+<!--<!DOCTYPE html>-->
+<!--<html>-->
+<!--<head>-->
+<!--    <title>Hello Javascript</title>-->
+<!--    <script type = "text/javascript">-->
+<!--        function validateForm()  {-->
+<!--            var u = document.getElementById("username").value;-->
+<!--            var p = document.getElementById("password").value;-->
+
+<!--            if(u== "") {-->
+<!--                alert("Please enter your Username");-->
+<!--                return false;-->
+<!--            }-->
+<!--            if(p == "") {-->
+<!--                alert("Please enter you Password");-->
+<!--                return false;-->
+<!--            }-->
+
+<!--            alert("All datas are valid!, send it to the server!")-->
+
+<!--            return true;-->
+<!--        }-->
+<!--    </script>-->
+<!--</head>-->
+<!--<body>-->
+
+<!--<h2>Enter your Username and Password</h2>-->
+
+<!--<div style="border:1px solid #ddd; padding: 5px;">-->
+<!--    <form method="GET" action="process-action.html" onsubmit = "return validateForm()">-->
+<!--        Username: <input type="text" name="username" id="username"/>-->
+<!--        <br><br>-->
+<!--        Password: <input type="password" name = "password" id="password"/>-->
+<!--        <br><br>-->
+<!--        <button type="submit">Submit</button>-->
+<!--    </form>-->
+<!--</div>-->
+
+<!--</body>-->
+<!--</html>-->

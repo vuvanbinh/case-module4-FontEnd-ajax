@@ -3,25 +3,199 @@
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title><Ministry></title>
+    <script src="show.js"></script>
 </head>
 <body>
 <h1>Ministry</h1>
 
+<div style="text-align: right; margin-right: 50px ">
+    <div style="margin-right: -17px">
+        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRNxf7EpLw4SUEqRsZYkp_GjHL7ChuGR9CNKQ&usqp=CAU"
+             alt=""
+             width="100" height="100"><br>
+    </div>
+    <div>
+        <span id="name" style="font-size: 20px"></span>
+    </div>
+    <div>
+        <a href="" onclick="logOut()">Log Out</a>
+    </div>
+</div>
 
+
+<a href="" onclick="gradesForm()">Cập nhật điểm</a>
+<a href="" onclick="studentForm()">Cập nhật trạng thái hs</a>
+
+<br><br>
+<div id="form"></div>
+
+</div>
+<br><br>
 </body>
+
+
 <script type="text/javascript">
-    $(document).ready(function (){
-        let roles= JSON.parse(window.sessionStorage.getItem('ROLE_KEY'));
-        if (roles===null){
+
+    $(document).ready(function () {
+        let name = window.sessionStorage.getItem('NAME_KEY')
+        document.getElementById("name").innerHTML = name;
+        let roles = JSON.parse(window.sessionStorage.getItem('ROLE_KEY'));
+        if (roles === null) {
             window.location.href = 'login.html';
         }
         for (let i = 0; i < roles.length; i++) {
-            if (roles[i].authority!=='MINISTRY'){
+            if (roles[i].authority !== 'MINISTRY') {
                 window.location.href = 'login.html';
                 return
             }
         }
+
     })
+
+
+    function gradesForm() {
+        event.preventDefault();
+        document.getElementById("form").innerHTML =
+            `<button  onclick="saveGrades()">Lưu bảng điểm</button>
+<br><br>
+<span style="color: red" id="success"></span>
+<table border="1px" width="70%">
+    <tr>
+        <th>Lớp</th>
+        <th>Học sinh</th>
+        <th>Môn học</th>
+        <th>Kì thi</th>
+        <th>Lý thuyết</th>
+        <th>Thực hành</th>
+        <th>Điểm trung bình</th>
+    </tr>
+    <tr>
+        <td>
+            <select id="classes" onchange="showStudentByClassesId()"></select>
+        </td>
+        <td>
+            <select  id="users"></select>
+        </td>
+        <td>
+            <select  id="subject"></select>
+        </td>
+        <td>
+            <select id="exam">
+                <option value="Module1">Module1</option>
+                <option value="Module2">Module2</option>
+                <option value="Module3">Module3</option>
+                <option value="Module4">Module4</option>
+                <option value="Module5">Module5</option>
+                <option value="Module6">Module6</option>
+            </select>
+        </td>
+        <td><input type="number" id="theory" oninput="average()"></td>
+        <td><input type="number" id="practice" oninput="average()"></td>
+        <td><input type="number" id="average"></td>
+    </tr>
+</table>`
+        showAllClasses()
+        showAllSubject()
+    }
+    function saveGrades() {
+        let exam = $('#exam').val();
+        let theory = $('#theory').val();
+        let practice = $('#practice').val();
+        let average = $('#average').val();
+        let subject_id = $('#subject').val();
+        let users_id = $('#users').val();
+
+        let grade = {
+            exam: exam,
+            theory: theory,
+            practice: practice,
+            average:average,
+            subject_id: subject_id,
+            users_id: users_id
+        }
+
+        let success = {message: "Create success!"}
+        $.ajax({
+            url: 'http://localhost:8080/grade/create',
+            method: 'POST',
+            data: JSON.stringify(grade),
+            contentType: 'application/json; charset=utf8',
+            success: function (data) {
+                if (JSON.stringify(data) === JSON.stringify(success)) {
+                    document.getElementById("success").innerHTML = "Lưu điểm  thành công";
+                }
+            }
+
+        })
+    }
+
+
+
+    function studentForm() {
+        event.preventDefault();
+        document.getElementById("form").innerHTML =
+            ` <button onclick="updateStudentStatus()">Cập nhật trạng thái </button>
+    <br><br>
+    <span style="color: red" id="success"></span>
+    <table border="1px" width="70%">
+        <tr>
+            <th>Lớp</th>
+            <th>Học sinh</th>
+            <th>Trạng thái</th>
+        </tr>
+        <tr>
+            <td>
+                <select id="classes" onchange="showStudentByClassesId()"></select>
+            </td>
+            <td>
+                <select  id="users"></select>
+            </td>
+            <td>
+                <select id="status">
+                    <option >--Chọn--</option>
+                    <option value="Dang hoc">Đang học</option>
+                    <option value="Thoi hoc">Thôi học</option>
+                    <option value="Dinh chi">Đình chỉ</option>
+                    <option value="Cho chuyen lop">Chờ chuyển lớp</option>
+                </select>
+            </td>
+        </tr>
+    </table>
+`
+        showAllClasses()
+    }
+    function updateStudentStatus() {
+        let response = {message: "update success!"}
+        let usersID = $('#users').val();
+        let status = $('#status').val();
+        $.ajax({
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            type: 'PUT',
+            url: 'http://localhost:8080/user/updateStatus/' + usersID + '?status=' + status,
+            success: function (data) {
+                if (JSON.stringify(data) === JSON.stringify(response)) {
+                    document.getElementById("success").innerText = "Cập nhật trạng thái thành công";
+                }
+            }
+        });
+    }
+
+
+    function average() {
+        let theory = parseInt($('#theory').val());
+        let practice = parseInt($('#practice').val());
+        let average = (theory + practice) / 2
+        $('#average').val(average)
+    }
+
+
+    function logOut(){
+        event.preventDefault()
+        logOutConfirm()
+    }
 </script>
 </html>

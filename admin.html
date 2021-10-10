@@ -3,20 +3,42 @@
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>Admin</title>
+    <script src="show.js"></script>
 </head>
 <body>
 <h1>Admin</h1>
 
-<a href="" onclick="usersForm()">Add new Users</a>
-<a href="" onclick="classesForm()">Add new Class</a>
-<a href="" onclick="subjectForm()">Add new Subject</a>
+<div style="text-align: right; margin-right: 50px ">
+    <div style="margin-right: -17px">
+        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTGkvHnw-e8xkeN27LPJn5JJvw4XbIgOM8OEw&usqp=CAU"
+             alt="" width="100"  height="100"><br>
+    </div>
+    <div>
+        <span id="name" style="font-size: 20px"></span>
+    </div>
+    <div>
+        <a href="" onclick="logOut()">Log Out</a>
+    </div>
+</div>
+
+
+
+<a href="" onclick="usersForm()">Add new Users</a>,
+<a href="" onclick="classesForm()">Add new Class</a>,
+<a href="" onclick="subjectForm()">Add new Subject</a>,
+<a href="" onclick="tuitionFeeForm()">Add new TuitionFee</a>
+
+
 
 <div id="form">
 </div>
 </body>
 <script type="text/javascript">
     $(document).ready(function () {
+        let name = window.sessionStorage.getItem('NAME_KEY')
+        document.getElementById("name").innerHTML=name;
+
         let roles = JSON.parse(window.sessionStorage.getItem('ROLE_KEY'));
         if (roles === null) {
             window.location.href = 'login.html';
@@ -28,6 +50,101 @@
             }
         }
     })
+
+
+
+    function tuitionFeeForm(){
+        event.preventDefault();
+        document.getElementById("form").innerHTML=
+            `<div>
+    <fieldset style="width: 60%">
+        <legend>Information</legend>
+        <form action="">
+            <table>
+                <div>
+                    <span style="color: red" id="success"></span>
+                </div>
+                <tr>
+                    <td>Lớp:</td>
+                    <td><select id="classes" onchange="showStudentByClassesId()"></select></td>
+                </tr>
+                <tr>
+                    <td>Học sinh</td>
+                    <td><select id="users"></select></td>
+                </tr>
+                <tr>
+                    <td>Đợt đóng:</td>
+                    <td>
+                        <select id="dotDog">
+                            <option value="Đợt 1">Đợt 1</option>
+                            <option value="Đợt 2">Đợt 2</option>
+                            <option value="Đợt 3">Đợt 3</option>
+                            <option value="Đợt 4">Đợt 4</option>
+                            <option value="Đợt 5">Đợt 5</option>
+                            <option value="Đợt 6">Đợt 6</option>
+                        </select>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Ngày đóng:</td>
+                    <td><input type="date" id="dayDog"></td>
+                </tr>
+                <tr>
+                    <td>Số tiền:</td>
+                    <td><input type="number" id="money"></td>
+                </tr>
+                <tr>
+                    <td>Tình trạng:</td>
+                    <td><select id="status">
+                        <option value="Nợ">Nợ</option>
+                        <option value="Đã đóng">Đã đóng</option>
+                    </select>
+                    </td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td>
+                        <button onclick="addTuitionFee()">Submit</button>
+                    </td>
+                </tr>
+            </table>
+        </form>
+    </fieldset>
+</div>`
+        showAllClasses()
+    }
+    function addTuitionFee() {
+        event.preventDefault();
+        let dotDog = $('#dotDog').val();
+        let dayDog = $('#dayDog').val();
+        let money = $('#money').val();
+        let status = $('#status').val();
+        let usersId = $('#users').val();
+
+        let tuitionFee = {
+            dotDog: dotDog,
+            dayDog: dayDog,
+            money: money,
+            status: status,
+            usersId: usersId
+        }
+        let success = {message: "Create success!"}
+        $.ajax({
+            url: 'http://localhost:8080/tuitionFee/create',
+            method: 'POST',
+            data: JSON.stringify(tuitionFee),
+            contentType: 'application/json; charset=utf8',
+            success: function (data) {
+                if (JSON.stringify(data) === JSON.stringify(success)) {
+                    document.getElementById("success").innerHTML = "Lưu học phí thành công";
+                } else {
+                    document.getElementById("success").innerHTML = "Đăng ký không thành công tên lớp học đã tồn tại";
+                }
+            }
+        })
+    }
+
+
 
     function usersForm() {
         event.preventDefault()
@@ -66,9 +183,10 @@
         <td>
             <select id="status">
                 <option >--Chon--</option>
-                <option value="Dang hoc">Dang hoc</option>
-                <option value="Dang nghi">Da nghi</option>
-                <option value="Dang hoc">Bo hoc</option>
+                <option value="Đang học">Đang học</option>
+                <option value="Thôi học">Thôi học</option>
+                <option value="Đình chỉ">Đình chỉ</option>
+                <option value="Chờ chuuyển lớp">Chờ chuyển lớp</option>
             </select>
         </td>
     </tr>
@@ -77,6 +195,7 @@
         <td>
             <select  id="role">
                 <option value="coach">Coach</option>
+                <option value="admin">Admin</option>
                 <option value="ministry">Ministry</option>
                 <option value="student">Student</option>
             </select>
@@ -89,7 +208,7 @@
     <tr>
         <td>Class:</td>
         <td>
-            <select name="class" id="classesId">
+            <select name="class" id="classes" multiple="multiple">
             </select>
         </td>
     </tr>
@@ -98,19 +217,8 @@
         <td><button onclick="addNewUser()">Submit</button></td>
     </tr>
 </table>`
-        $.ajax({
-            url: 'http://localhost:8080/classes',
-            type: "GET",
-            success: function (data) {
-                let result = "<option value='0'>--Chon--</option>";
-                for (let i = 0; i < data.length; i++) {
-                    result += `<option value="${data[i].id}">${data[i].name}</option>`
-                }
-                document.getElementById("classesId").innerHTML = result;
-            }
-        })
+        showAllClasses()
     }
-
     function addNewUser() {
         let fullName = $('#fullName').val();
         let email = $('#email').val();
@@ -120,6 +228,7 @@
         let dob = $('#dob').val();
         let status = $('#status').val();
         let avatar = $('#avatar').val();
+
         let role = $('#role').val();
         let roles = [];
         switch (role) {
@@ -136,9 +245,10 @@
                 break;
             }
         }
-        let classesId = $('#classesId').val();
-        if (classesId === 0) {
-            classesId = null
+
+        let classesIds = $('#classes').val();
+        if (classesIds === []) {
+            classesIds = null
         }
 
 
@@ -152,7 +262,7 @@
             status: status,
             avatar: avatar,
             roles: roles,
-            classesId: classesId
+            classesIds: classesIds
         }
 
         let success = {message: "Create success!"}
@@ -174,16 +284,18 @@
     }
 
 
+
     function classesForm() {
         event.preventDefault()
         document.getElementById("form").innerHTML =
             `
 <div>
     <span style="color: red" id="success"></span>
-</div><table>
+</div>
+<table>
     <tr>
         <td>Class name:</td>
-        <td><input type="text" id="name"></td>
+        <td><input type="text" id="classesName"></td>
     </tr>
     <tr>
         <td></td>
@@ -193,7 +305,7 @@
 `
     }
     function addNewClasses(){
-        let name = $('#name').val();
+        let name = $('#classesName').val();
         let classes = {name:name}
 
         let success = {message: "Create success!"}
@@ -212,7 +324,9 @@
         })
     }
 
-function subjectForm() {
+
+
+    function subjectForm() {
         event.preventDefault()
         document.getElementById("form").innerHTML =
             `
@@ -221,7 +335,7 @@ function subjectForm() {
 </div><table>
     <tr>
         <td>Subject name:</td>
-        <td><input type="text" id="name"></td>
+        <td><input type="text" id="subjectName"></td>
     </tr>
     <tr>
         <td></td>
@@ -231,7 +345,7 @@ function subjectForm() {
 `
     }
     function addNewSubject(){
-        let name = $('#name').val();
+        let name = $('#subjectName').val();
         let subject = {name:name}
 
         let success = {message: "Create success!"}
@@ -247,7 +361,15 @@ function subjectForm() {
                     document.getElementById("success").innerHTML = "Đăng ký không thành công tên môn học đã tồn tại";
                 }
             }
+
         })
+    }
+
+
+
+    function logOut(){
+        event.preventDefault()
+        logOutConfirm()
     }
 
 </script>

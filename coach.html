@@ -1,17 +1,47 @@
 <!DOCTYPE html>
 <html lang="en">
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+
+<!-------------PHÂN TRANG ------------->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/paginationjs/2.1.4/pagination.min.js"></script>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/paginationjs/2.1.4/pagination.css" rel="stylesheet"/>
+<!-------------/PHÂN TRANG ------------->
+
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>Coach</title>
+    <script src="show.js"></script>
 </head>
 <body>
 <h1>Coach</h1>
+
+<div style="text-align: right; margin-right: 50px ">
+    <div style="margin-right: -17px">
+        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTGkvHnw-e8xkeN27LPJn5JJvw4XbIgOM8OEw&usqp=CAU"
+             alt="" width="100" height="100"><br>
+    </div>
+    <div>
+        <span id="name" style="font-size: 20px"></span>
+    </div>
+    <div>
+        <a href="" onclick="logOut()">Log Out</a>
+    </div>
+</div>
+
+
+<div id="result">
+</div>
+<div id="result2">
+</div>
 
 
 </body>
 <script type="text/javascript">
     $(document).ready(function () {
+        let name = window.sessionStorage.getItem('NAME_KEY')
+        document.getElementById("name").innerHTML = name;
+
         let roles = JSON.parse(window.sessionStorage.getItem('ROLE_KEY'));
         if (roles === null) {
             window.location.href = 'login.html';
@@ -22,8 +52,148 @@
                 return
             }
         }
+
+        let id = window.sessionStorage.getItem('ID_KEY');
+        $.ajax({
+            url: 'http://localhost:8080/classes/findAllByUser/' + id,
+            type: "GET",
+            success: function (data) {
+                let result =
+                    "<table>\n" +
+                    "        <thead>\n" +
+                    "        <tr>\n" +
+                    "            <th>STT</th>\n" +
+                    "            <th>Tên lớp</th>\n" +
+                    "            <th>Sĩ số</th>\n" +
+                    "            <th>Chi tiết lớp</th>\n" +
+                    "        </tr>\n" +
+                    "        </thead>\n" +
+                    "        <tbody>";
+
+                for (let i = 0; i < data.length; i++) {
+                    let count = 0;
+                    let users = data[i].users
+                    for (let j = 0; j < users.length; j++) {
+                        for (let k = 0; k < users[j].roles.length; k++) {
+                            if (users[j].roles[k].name === 'STUDENT') {
+                                count += 1;
+                            }
+                        }
+                    }
+
+                    result += ` <tr>
+                <td>${i + 1}</td>
+                <td>${data[i].name}</td>
+                <td>${count}</td>
+                <td><a href="" onclick="showClassesDetail(${data[i].id})">Chi tiet</a></td>
+            </tr>`
+                }
+                result += "  </tbody>\n" +
+                    "    </table>"
+                document.getElementById("result").innerHTML = result;
+            }
+        })
     })
 
 
-</script>
+    function showClassesDetail(id) {
+        event.preventDefault()
+        window.sessionStorage.setItem('CLASSES_ID', id);
+        let url = ('http://localhost:8080/user/findAllStudentByClassesId/' + id);
+        $.ajax({
+            url: url,
+            type: "GET",
+            success: function (data) {
+                let size = data.length;
+                showPageListStudent(url, size)
+            }
+        })
+    }
+
+
+    function showPageListStudent(url, size) {
+        $(function () {
+            let container = $('#result2');
+            container.pagination({
+                dataSource: url,
+                locator: 'itemts',
+                totalNumber: size,
+                pageSize: 3,
+                callback: function (response, pagination) {
+                    let result =
+                        '<div><a href="" onclick="reloadPage()">Quay lại danh sách lớp</a></div> <br>' +
+                        '<div>\n' +
+                        '    <label for="status">Chọn trạng thái hiển thị:</label>\n' +
+                        '    <select onchange="showPageListStudentByStatus(window.sessionStorage.getItem(`CLASSES_ID`))" id="status">\n' +
+                        '        <option>----</option>\n' +
+                        '        <option value="all">Tất cả</option>\n' +
+                        '        <option value="Đang học">Đang học</option>\n' +
+                        '        <option value="Đình chỉ">Đình chỉ</option>\n' +
+                        '        <option value="Chờ chuyển lớp">Chờ chuyển lớp</option>\n' +
+                        '        <option value="Thôi học">Thôi học</option>\n' +
+                        '    </select>\n' +
+                        '</div> <br>' +
+                        '<table width="98%" border="1px">\n' +
+                        '        <thead>\n' +
+                        '        <tr>\n' +
+                        '            <th>STT</th>\n' +
+                        '            <th>Họ tên</th>\n' +
+                        '            <th>Email</th>\n' +
+                        '            <th>Ngày sinh</th>\n' +
+                        '            <th>Địa chỉ</th>\n' +
+                        '            <th>Số điện thoại</th>\n' +
+                        '            <th>Trạng thái</th>\n' +
+                        '        </tr>\n' +
+                        '        </thead>\n' +
+                        '        <tbody>';
+
+                    let pageStart = (pagination.pageNumber - 1) * pagination.pageSize;
+                    let pageEnd = pageStart + pagination.pageSize;
+                    let pageItems = response.slice(pageStart, pageEnd);
+                    $.each(pageItems, function (index, item) {
+                        let indexs = index + 1;
+                        result +=
+                            `<tr>
+                                <td>${indexs}</td>
+                                <td>${item.fullName}</td>
+                                <td>${item.email}</td>
+                                <td>${item.dob}</td>
+                                <td>${item.address}</td>
+                                <td>${item.phoneNumber}</td>
+                                <td>${item.status}</td>
+                            </tr>`
+                    })
+                    result += "  </tbody>\n" +
+                        "    </table>"
+                    container.prev().html(result);
+
+                }
+            })
+        })
+    }
+
+
+    function showPageListStudentByStatus(id) {
+        let status = $('#status').val()
+        let url = ('http://localhost:8080/user/findAllStudentByClassesId/' + id + '?status=' + status);
+        $.ajax({
+            url: url,
+            type: "GET",
+            success: function (data) {
+                let size = data.length;
+                showPageListStudent(url, size)
+            }
+        })
+    }
+
+
+    function reloadPage() {
+        location.reload();
+    }
+
+
+    function logOut(){
+        event.preventDefault()
+        logOutConfirm()
+    }</script>
 </html>
