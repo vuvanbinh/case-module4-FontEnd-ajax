@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<head>
+    <meta charset="UTF-8">
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+    <!--  <script src="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"></script>-->
+    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/4.2.0/firebase.js"></script>
+    <title>Title</title>
+    <script src="show.js"></script>
+</head>
+<body>
+
+
+<div>
+    <span style="color: red" id="success"></span>
+</div>
+<table>
+    <tr>
+        <td>FullName:</td>
+        <td><input type="text" id="fullName"></td>
+    </tr>
+    <tr>
+        <td>Email:</td>
+        <td><input type="text" id="email"></td>
+    </tr>
+    <tr>
+        <td>Password:</td>
+        <td><input type="text" id="password"></td>
+    </tr>
+    <tr>
+        <td>Phone Number:</td>
+        <td><input type="number" id="phoneNumber"></td>
+    </tr>
+    <tr>
+        <td>Address:</td>
+        <td><input type="text" id="address"></td>
+    </tr>
+    <tr>
+        <td>Date of birth:</td>
+        <td><input type="date" id="dob"></td>
+    </tr>
+
+    <tr>
+        <td>Status:</td>
+        <td>
+            <select id="status">
+                <option >--Chon--</option>
+                <option value="Đang học">Đang học</option>
+                <option value="Thôi học">Thôi học</option>
+                <option value="Đình chỉ">Đình chỉ</option>
+                <option value="Chờ chuuyển lớp">Chờ chuyển lớp</option>
+            </select>
+        </td>
+    </tr>
+    <tr>
+        <td>Role:</td>
+        <td>
+            <select  id="role">
+                <option value="coach">Coach</option>
+                <option value="admin">Admin</option>
+                <option value="ministry">Ministry</option>
+                <option value="student">Student</option>
+            </select>
+        </td>
+    </tr>
+    <tr>
+        <td>Avatar:</td>
+        <input type="hidden" id="avatarFirebase"/>
+        <td><input type="file" value="upload" accept=".jpg" id="avatar"></td>
+    </tr>
+    <tr>
+        <td>Class:</td>
+        <td>
+            <select name="class" id="classes" multiple="multiple">
+            </select>
+        </td>
+    </tr>
+    <tr>
+        <td></td>
+
+        <td><button onclick="addNewUser()">Submit</button></td>
+
+    </tr>
+</table>
+
+<script>
+    const firebaseConfig = {
+        apiKey: "AIzaSyBC8iWGGzLfgDif0EBNjhwHT6b3YVtRO4E",
+        authDomain: "fir-db27f.firebaseapp.com",
+        projectId: "fir-db27f",
+        storageBucket: "fir-db27f.appspot.com",
+        messagingSenderId: "769037188358",
+        appId: "1:769037188358:web:b432c8c9279c43c7b0b287",
+        measurementId: "G-4DTZKY8CGE"
+    };
+    firebase.initializeApp(firebaseConfig);
+</script>
+
+<script>
+    let image = '';
+    // firebase bucket name
+    // REPLACE WITH THE ONE YOU CREATE
+    // ALSO CHECK STORAGE RULES IN FIREBASE CONSOLE
+    let fbBucketName = 'images';
+
+    // get elements
+    // let uploader = document.getElementById('uploader');
+    let fileButton = document.getElementById('avatar');
+
+    // listen for file selection
+    fileButton.addEventListener('change', function (e) {
+
+        // what happened
+        console.log('file upload event', e);
+
+        // get file
+        let file = e.target.files[0];
+
+        // create a storage ref
+        let storageRef = firebase.storage().ref(`${fbBucketName}/${file.name}`);
+
+        // upload file
+        let uploadTask = storageRef.put(file);
+
+        // The part below is largely copy-pasted from the 'Full Example' section from
+        // https://firebase.google.com/docs/storage/web/upload-files
+
+        // update progress bar
+        uploadTask.on(firebase.storage.TaskEvent.STATE_CHANGED, // or 'state_changed'
+            function (snapshot) {
+                // Get task progress, including the number of bytes uploaded and the total number of bytes to be uploaded
+
+
+
+                switch (snapshot.state) {
+                    case firebase.storage.TaskState.PAUSED: // or 'paused'
+                        console.log('Upload is paused');
+                        break;
+                    case firebase.storage.TaskState.RUNNING: // or 'running'
+                        console.log('Upload is running');
+                        break;
+                }
+            }, function (error) {
+
+                // A full list of error codes is available at
+                // https://firebase.google.com/docs/storage/web/handle-errors
+                switch (error.code) {
+                    case 'storage/unauthorized':
+                        // User doesn't have permission to access the object
+                        break;
+
+                    case 'storage/canceled':
+                        // User canceled the upload
+                        break;
+
+                    case 'storage/unknown':
+                        // Unknown error occurred, inspect error.serverResponse
+                        break;
+                }
+            }, function () {
+                // Upload completed successfully, now we can get the download URL
+                // save this link somewhere, e.g. put it in an input field
+                let downloadURL = uploadTask.snapshot.downloadURL;
+                // image = downloadURL;
+                console.log('downloadURL ===>', downloadURL);
+                let divLocation = document.getElementById("avatarFirebase");
+                divLocation.value= downloadURL
+            });
+
+    });
+
+
+    // function displayImage(pic) {
+    //     console.log('goi ham pic')
+    //     console.log('pic tren', pic)
+    //     let divLocation = document.getElementById("imgDiv");
+    //     let imgElement = document.createElement("img");
+    //     imgElement.src = pic
+    //     console.log('pic ==', pic)
+    //     divLocation.append(imgElement);
+    // }
+    //
+    //
+    //
+    // displayImage(image);
+
+</script>
+
+
+<script>
+    $(document).ready(function () {
+        showAllClasses()
+        })
+    function addNewUser() {
+        let fullName = $('#fullName').val();
+        let email = $('#email').val();
+        let passWord = $('#password').val();
+        let phoneNumber = $('#phoneNumber').val();
+        let address = $('#address').val();
+        let dob = $('#dob').val();
+        let status = $('#status').val();
+        let avatar = $('#avatarFirebase').val();
+
+        let role = $('#role').val();
+        let roles = [];
+        switch (role) {
+            case "student": {
+                roles = ["student"];
+                break;
+            }
+            case "admin": {
+                roles = ["admin"];
+                break;
+            }
+            case "ministry": {
+                roles = ["ministry"];
+                break;
+            }
+            case "coach": {
+                roles = ["coach"];
+                break;
+            }
+        }
+
+        let classesIds = $('#classes').val();
+        if (classesIds === []) {
+            classesIds = null
+        }
+
+
+        let signUpForm = {
+            fullName: fullName,
+            email: email,
+            password: passWord,
+            phoneNumber: phoneNumber,
+            address: address,
+            dob: dob,
+            status: status,
+            avatar: avatar,
+            roles: roles,
+            classesIds: classesIds
+        }
+
+        let success = {message: "Create success!"}
+        $.ajax({
+            url: 'http://localhost:8080/user/signup',
+            method: 'POST',
+            data: JSON.stringify(signUpForm),
+            contentType: 'application/json; charset=utf8',
+            success: function (data) {
+                if (JSON.stringify(data) === JSON.stringify(success)) {
+                    document.getElementById("success").innerHTML = "Đăng ký thành công";
+                } else {
+                    document.getElementById("success").innerHTML = "Đăng ký không thành công tên user đã tồn tại";
+                }
+
+            }
+        })
+
+    }
+</script>
+</body>
+</html>
