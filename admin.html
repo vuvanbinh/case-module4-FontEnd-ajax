@@ -23,10 +23,15 @@
 </div>
 
 
-<a href="" onclick="usersForm()">Add new Users</a>,
-<a href="" onclick="classesForm()">Add new Class</a>,
-<a href="" onclick="subjectForm()">Add new Subject</a>,
-<a href="" onclick="tuitionFeeForm()">Add new TuitionFee</a>
+<div>
+    <span style="font-size: 20px;color: red" id="success"></span><br>
+    <a href="" onclick="usersForm()">Add new Users</a>,
+    <a href="" onclick="classesForm()">Add new Class</a>,
+    <a href="" onclick="subjectForm()">Add new Subject</a>,
+    <a href="" onclick="tuitionFeeForm()">Add new TuitionFee</a>
+</div>
+
+
 
 
 <div id="form">
@@ -52,6 +57,7 @@
 
     function tuitionFeeForm() {
         event.preventDefault();
+        document.getElementById("success").innerHTML ="";
         document.getElementById("form").innerHTML =
             `<div>
     <fieldset style="width: 60%">
@@ -134,6 +140,7 @@
             contentType: 'application/json; charset=utf8',
             success: function (data) {
                 if (JSON.stringify(data) === JSON.stringify(success)) {
+                    tuitionFeeForm()
                     document.getElementById("success").innerHTML = "Lưu học phí thành công";
                 } else {
                     document.getElementById("success").innerHTML = "Đăng ký không thành công tên lớp học đã tồn tại";
@@ -145,15 +152,13 @@
 
     function usersForm() {
         event.preventDefault()
+        document.getElementById("success").innerHTML ="";
         document.getElementById("form").innerHTML =
             `
 <div>
     <fieldset style="width: 60%">
         <legend>Information</legend>
         <form action="">
-            <div>
-                <span style="color: red" id="success"></span>
-            </div>
             <table>
                 <tr>
                     <td>FullName:</td>
@@ -287,6 +292,7 @@
             contentType: 'application/json; charset=utf8',
             success: function (data) {
                 if (JSON.stringify(data) === JSON.stringify(success)) {
+                    usersForm()
                     document.getElementById("success").innerHTML = "Đăng ký thành công";
                 } else {
                     document.getElementById("success").innerHTML = "Đăng ký không thành công tên user đã tồn tại";
@@ -300,15 +306,13 @@
 
     function classesForm() {
         event.preventDefault()
+        document.getElementById("success").innerHTML ="";
         document.getElementById("form").innerHTML =
             `
 <div>
     <fieldset style="width: 60%">
         <legend>Information</legend>
         <form action="">
-            <div>
-                <span style="color: red" id="success"></span>
-            </div>
             <table>
                 <tr>
                     <td>Class name:</td>
@@ -340,6 +344,7 @@
             contentType: 'application/json; charset=utf8',
             success: function (data) {
                 if (JSON.stringify(data) === JSON.stringify(success)) {
+                    classesForm();
                     document.getElementById("success").innerHTML = "Đăng ký thành công";
                 } else {
                     document.getElementById("success").innerHTML = "Đăng ký không thành công tên lớp học đã tồn tại";
@@ -351,15 +356,13 @@
 
     function subjectForm() {
         event.preventDefault()
+        document.getElementById("success").innerHTML ="";
         document.getElementById("form").innerHTML =
             `
 <div>
     <fieldset style="width: 60%">
         <legend>Information</legend>
         <form action="">
-            <div>
-                <span style="color: red" id="success"></span>
-            </div>
             <table>
                 <tr>
                     <td>Subject name:</td>
@@ -391,12 +394,12 @@
             contentType: 'application/json; charset=utf8',
             success: function (data) {
                 if (JSON.stringify(data) === JSON.stringify(success)) {
+                    subjectForm()
                     document.getElementById("success").innerHTML = "Đăng ký thành công";
                 } else {
                     document.getElementById("success").innerHTML = "Đăng ký không thành công tên môn học đã tồn tại";
                 }
             }
-
         })
     }
 

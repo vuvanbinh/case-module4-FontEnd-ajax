@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>How to get the value of textArea</title>
+  <script src=
+                  "https://code.jquery.com/jquery-1.12.4.min.js">
+  </script>
+</head>
+<body>
+<center>
+  <h1 style="color: green;">GeeksforGeeks</h1>
+  <textarea id="txtArea"></textarea><br><br>
+  <button id="btn">Show Text</button>
+</center>
+</body>
+
+<script>
+  $(document).ready(function () {
+
+    //This function called when the button is clicked
+    $("#btn").click(function () {
+
+      // val() method is used to get the values from
+      // textarea and stored in txt variable
+      var txt = $("#txtArea").val();
+      alert(txt);
+    });
+  });
+</script>
+</html>

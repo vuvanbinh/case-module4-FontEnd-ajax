@@ -14,6 +14,7 @@ function showAllClasses() {
 
 
 function showStudentByClassesId() {
+
     let classesId = $('#classes').val();
     $.ajax({
         url: 'http://localhost:8080/user/findAllStudentByClassesId/' + classesId,
@@ -24,6 +25,7 @@ function showStudentByClassesId() {
                 result += `<option value="${data[i].id}">${data[i].fullName}</option>`
             }
             document.getElementById("users").innerHTML = result;
+            document.getElementById("success").innerHTML="";
         }
     })
 }

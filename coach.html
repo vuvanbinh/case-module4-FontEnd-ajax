@@ -29,7 +29,7 @@
     </div>
 </div>
 
-
+<div><span id='success' style=' color: red;font-size: 25px'></span></div>
 <div id="result">
 </div>
 <div id="result2">
@@ -52,7 +52,11 @@
                 return
             }
         }
+        showListClasses()
 
+    })
+
+    function showListClasses(){
         let id = window.sessionStorage.getItem('ID_KEY');
         $.ajax({
             url: 'http://localhost:8080/classes/findAllByUser/' + id,
@@ -66,6 +70,7 @@
                     "            <th>Tên lớp</th>\n" +
                     "            <th>Sĩ số</th>\n" +
                     "            <th>Chi tiết lớp</th>\n" +
+                    "            <th>Viết nhật ký</th>\n" +
                     "        </tr>\n" +
                     "        </thead>\n" +
                     "        <tbody>";
@@ -86,14 +91,57 @@
                 <td>${data[i].name}</td>
                 <td>${count}</td>
                 <td><a href="" onclick="showClassesDetail(${data[i].id})">Chi tiet</a></td>
+                <td><button onclick="showDiaryForm(${data[i].id})">Viết nhật ký cho lớp ${data[i].name}</button></td>
             </tr>`
                 }
                 result += "  </tbody>\n" +
-                    "    </table>"
+                    "    </table>" +
+                    "<br> <div id='resultDiaryForm'></div>"
+
                 document.getElementById("result").innerHTML = result;
             }
         })
-    })
+    }
+
+    function showDiaryForm(classesId,classesName) {
+        document.getElementById("success").innerHTML ="";
+        document.getElementById("resultDiaryForm").innerHTML =
+                            `<div>
+                    <form action="">
+                        <textarea placeholder="Nhập nội dung nhật ký cho lớp ${classesName}" style="width: 400px;height: 200px" id="content"></textarea><br>
+                        <button onclick="addNewDiary(${classesId})">Lưu nhật ký</button>
+                    </form>
+                            </div>`
+    }
+
+    function addNewDiary(classesId) {
+        event.preventDefault();
+        let content = $('#content').val();
+        let date = new Date();
+        let coachName = window.sessionStorage.getItem('NAME_KEY');
+
+        let diary = {
+            content:content,
+            date:date,
+            coachName:coachName,
+            classesId:classesId
+        }
+
+        let success = {message: "Create success!"}
+        $.ajax({
+            contentType: 'application/json; charset=utf8',
+            url: 'http://localhost:8080/diary/create',
+            method: 'POST',
+            data: JSON.stringify(diary),
+            success: function (data) {
+                if (JSON.stringify(data) === JSON.stringify(success)) {
+                    showListClasses()
+                    document.getElementById("success").innerHTML = "Đã lưu nhật ký của ngày hôm nay!";
+                }
+            }
+        })
+
+    }
 
 
     function showClassesDetail(id) {
@@ -192,7 +240,7 @@
     }
 
 
-    function logOut(){
+    function logOut() {
         event.preventDefault()
         logOutConfirm()
     }</script>

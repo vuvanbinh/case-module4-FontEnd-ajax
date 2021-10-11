@@ -23,14 +23,15 @@
     </div>
 </div>
 
-
-<a href="" onclick="gradesForm()">Cập nhật điểm</a>
-<a href="" onclick="studentForm()">Cập nhật trạng thái hs</a>
-
-<br><br>
+<br>
+<div>
+    <span style="font-size: 20px;color: red" id="success"></span><br><br>
+    <a href="" onclick="gradesForm()">Cập nhật điểm</a>
+    <a href="" onclick="studentForm()">Cập nhật trạng thái hs</a>
+</div>
+<br>
 <div id="form"></div>
 
-</div>
 <br><br>
 </body>
 
@@ -55,11 +56,11 @@
 
 
     function gradesForm() {
+        document.getElementById("success").innerHTML ="";
         event.preventDefault();
         document.getElementById("form").innerHTML =
             `<button  onclick="saveGrades()">Lưu bảng điểm</button>
-<br><br>
-<span style="color: red" id="success"></span>
+<br>
 <table border="1px" width="70%">
     <tr>
         <th>Lớp</th>
@@ -98,6 +99,7 @@
         showAllClasses()
         showAllSubject()
     }
+
     function saveGrades() {
         let exam = $('#exam').val();
         let theory = $('#theory').val();
@@ -123,6 +125,7 @@
             contentType: 'application/json; charset=utf8',
             success: function (data) {
                 if (JSON.stringify(data) === JSON.stringify(success)) {
+                    gradesForm()
                     document.getElementById("success").innerHTML = "Lưu điểm  thành công";
                 }
             }
@@ -134,10 +137,10 @@
 
     function studentForm() {
         event.preventDefault();
+        document.getElementById("success").innerHTML="";
         document.getElementById("form").innerHTML =
             ` <button onclick="updateStudentStatus()">Cập nhật trạng thái </button>
-    <br><br>
-    <span style="color: red" id="success"></span>
+    <br>
     <table border="1px" width="70%">
         <tr>
             <th>Lớp</th>
@@ -154,10 +157,10 @@
             <td>
                 <select id="status">
                     <option >--Chọn--</option>
-                    <option value="Dang hoc">Đang học</option>
-                    <option value="Thoi hoc">Thôi học</option>
-                    <option value="Dinh chi">Đình chỉ</option>
-                    <option value="Cho chuyen lop">Chờ chuyển lớp</option>
+                    <option value="Đang học">Đang học</option>
+                    <option value="Thôi học">Thôi học</option>
+                    <option value="Đình chỉ">Đình chỉ</option>
+                    <option value="Chờ chuyển lớp">Chờ chuyển lớp</option>
                 </select>
             </td>
         </tr>
@@ -178,6 +181,7 @@
             url: 'http://localhost:8080/user/updateStatus/' + usersID + '?status=' + status,
             success: function (data) {
                 if (JSON.stringify(data) === JSON.stringify(response)) {
+                    studentForm()
                     document.getElementById("success").innerText = "Cập nhật trạng thái thành công";
                 }
             }
