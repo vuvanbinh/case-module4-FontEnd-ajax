@@ -31,6 +31,8 @@ function showStudentByClassesId() {
 }
 
 
+
+
 function showAllSubject(){
     $.ajax({
         url: 'http://localhost:8080/subject',

@@ -16,6 +16,7 @@
 <body>
 <h1>Coach</h1>
 
+
 <div style="text-align: right; margin-right: 50px ">
     <div style="margin-right: -17px">
         <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTGkvHnw-e8xkeN27LPJn5JJvw4XbIgOM8OEw&usqp=CAU"
@@ -29,11 +30,10 @@
     </div>
 </div>
 
-<div><span id='success' style=' color: red;font-size: 25px'></span></div>
-<div id="result">
-</div>
-<div id="result2">
-</div>
+<div><span id='success' style=' color: red;font-size: 20px'></span></div>
+<div id="result"></div>
+<div id="result2"></div>
+
 
 
 </body>
@@ -53,7 +53,6 @@
             }
         }
         showListClasses()
-
     })
 
     function showListClasses(){
@@ -85,13 +84,12 @@
                             }
                         }
                     }
-
                     result += ` <tr>
                 <td>${i + 1}</td>
                 <td>${data[i].name}</td>
                 <td>${count}</td>
-                <td><a href="" onclick="showClassesDetail(${data[i].id})">Chi tiet</a></td>
-                <td><button onclick="showDiaryForm(${data[i].id})">Viết nhật ký cho lớp ${data[i].name}</button></td>
+                <td><a href="" onclick="showListStudentByClassId(${data[i].id})">Chi tiết</a></td>
+                <td><button onclick="showDiaryForm(${data[i].id},'classDiary')">Viết nhật ký cho lớp ${data[i].name}</button></td>
             </tr>`
                 }
                 result += "  </tbody>\n" +
@@ -103,28 +101,55 @@
         })
     }
 
-    function showDiaryForm(classesId,classesName) {
+
+    function showDiaryForm(id,typeDiary) {
+        event.preventDefault()
         document.getElementById("success").innerHTML ="";
-        document.getElementById("resultDiaryForm").innerHTML =
-                            `<div>
+        if (typeDiary==='classDiary'){
+            document.getElementById("resultDiaryForm").innerHTML =
+                `<div>
                     <form action="">
-                        <textarea placeholder="Nhập nội dung nhật ký cho lớp ${classesName}" style="width: 400px;height: 200px" id="content"></textarea><br>
-                        <button onclick="addNewDiary(${classesId})">Lưu nhật ký</button>
+                        <textarea placeholder="Nhập nội dung nhật ký " style="width: 400px;height: 200px" id="content"></textarea><br>
+                        <button onclick="addNewDiary(${id},'classDiary')">Lưu nhật ký</button>
+                        <button onclick="reloadPage()" >Huỷ</button>
                     </form>
                             </div>`
+        }else {
+            document.getElementById("resultStudentDiaryForm").innerHTML =
+                `<div>
+                    <form action="">
+
+                        <textarea placeholder="Nhập nội dung nhật ký " style="width: 400px;height: 200px" id="content"></textarea><br>
+                        <button onclick="addNewDiary(${id},'studentDiary')">Lưu nhật ký</button>
+                        <button onclick="showStudentDetail(${id})">Huỷ</button>
+                    </form>
+                            </div>`
+        }
+
     }
 
-    function addNewDiary(classesId) {
+
+    function addNewDiary(id,typeDiary) {
         event.preventDefault();
         let content = $('#content').val();
         let date = new Date();
         let coachName = window.sessionStorage.getItem('NAME_KEY');
+        let diary={};
 
-        let diary = {
-            content:content,
-            date:date,
-            coachName:coachName,
-            classesId:classesId
+        if (typeDiary==='classDiary'){
+            diary = {
+                content:content,
+                date:date,
+                coachName:coachName,
+                classesId:id
+            }
+        }else {
+            diary = {
+                content:content,
+                date:date,
+                coachName:coachName,
+                usersId:id
+            }
         }
 
         let success = {message: "Create success!"}
@@ -135,8 +160,15 @@
             data: JSON.stringify(diary),
             success: function (data) {
                 if (JSON.stringify(data) === JSON.stringify(success)) {
-                    showListClasses()
-                    document.getElementById("success").innerHTML = "Đã lưu nhật ký của ngày hôm nay!";
+                    if (typeDiary==='classDiary'){
+                        showListClasses()
+                        document.getElementById("success").innerHTML = "Đã lưu vào nhật ký của ngày hôm nay!";
+                    }else {
+                        showStudentDetail();
+                        document.getElementById("resultStudentDiaryForm").innerHTML =""
+                        document.getElementById("success").innerHTML = "Đã lưu vào nhật ký của ngày hôm nay!";
+                    }
+
                 }
             }
         })
@@ -144,7 +176,7 @@
     }
 
 
-    function showClassesDetail(id) {
+    function showListStudentByClassId(id) {
         event.preventDefault()
         window.sessionStorage.setItem('CLASSES_ID', id);
         let url = ('http://localhost:8080/user/findAllStudentByClassesId/' + id);
@@ -180,17 +212,14 @@
                         '        <option value="Chờ chuyển lớp">Chờ chuyển lớp</option>\n' +
                         '        <option value="Thôi học">Thôi học</option>\n' +
                         '    </select>\n' +
-                        '</div> <br>' +
-                        '<table width="98%" border="1px">\n' +
+                        '</div>' +
+                        ' <br>' +
+                        '<table width="50%" border="1px">\n' +
                         '        <thead>\n' +
                         '        <tr>\n' +
                         '            <th>STT</th>\n' +
+                        '            <th>Ảnh</th>\n' +
                         '            <th>Họ tên</th>\n' +
-                        '            <th>Email</th>\n' +
-                        '            <th>Ngày sinh</th>\n' +
-                        '            <th>Địa chỉ</th>\n' +
-                        '            <th>Số điện thoại</th>\n' +
-                        '            <th>Trạng thái</th>\n' +
                         '        </tr>\n' +
                         '        </thead>\n' +
                         '        <tbody>';
@@ -203,12 +232,8 @@
                         result +=
                             `<tr>
                                 <td>${indexs}</td>
-                                <td>${item.fullName}</td>
-                                <td>${item.email}</td>
-                                <td>${item.dob}</td>
-                                <td>${item.address}</td>
-                                <td>${item.phoneNumber}</td>
-                                <td>${item.status}</td>
+                                <td><img src="${item.avatar}" alt="" width="120" height="120"></td>
+                                <td><a href="" onclick="showStudentDetail(${item.id})">${item.fullName}</a></td>
                             </tr>`
                     })
                     result += "  </tbody>\n" +
@@ -217,6 +242,58 @@
 
                 }
             })
+        })
+    }
+
+
+    function showStudentDetail(id){
+        event.preventDefault()
+        $.ajax({
+            url: 'http://localhost:8080/user/findById/'+id,
+            type: "GET",
+            success: function (data) {
+                document.getElementById("result").innerHTML=
+                `
+<div>
+<a href="" onclick="showListStudentByClassId(${window.sessionStorage.getItem('CLASSES_ID')})">Quay lại danh sách học sinh</a>
+<br>
+    <fieldset style="width: 50%">
+        <legend>Information</legend>
+        <table>
+            <tr>
+                <td>
+                 <img src="https://encrypted-tbn0.gstatic.com/
+            images?q=tbn:ANd9GcSUaYtKWENSLyHB22aNDcKzIQagFGxtQ20FPA&usqp=CAU"
+                     alt="" width="400" height="300">
+                </td>
+            </tr>
+            <tr>
+                <td>${data.fullName}</td>
+            </tr>
+            <tr>
+                <td>${data.email}</td>
+            </tr>
+            <tr>
+                <td>${data.phoneNumber}</td>
+            </tr>
+            <tr>
+                <td>${data.address}</td>
+            </tr>
+            <tr>
+                <td>${data.status}</td>
+            </tr>
+            <tr>
+                <td><a href="" onclick="showDiaryForm(${data.id},'studentDiary')">Viết nhật ký cho ${data.fullName}</a></td>
+            </tr>
+        </table>
+        <div id='resultStudentDiaryForm'></div>
+    </fieldset>
+</div>
+--------------------------------------------
+
+                `
+
+            }
         })
     }
 
