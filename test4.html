@@ -12,10 +12,17 @@
   <textarea id="txtArea"></textarea><br><br>
   <button id="btn">Show Text</button>
 </center>
+
+<input type="number" id="id" >
 </body>
 
 <script>
+
+
   $(document).ready(function () {
+    if ($('#id').val()===''){console.log('-----' +6);}
+
+
 
     //This function called when the button is clicked
     $("#btn").click(function () {

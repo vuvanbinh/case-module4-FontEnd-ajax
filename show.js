@@ -60,6 +60,20 @@ function logOutConfirm(){
     }else return;
 }
 
+function viewAccount(avatar){
+    document.getElementById("result1").innerHTML=
+        `<div style="margin-right: -17px">
+        <img  src="${avatar}"
+             alt="" width="100" height="100"><br>
+    </div>
+    <div>
+        <span id="name" style="font-size: 20px"></span>
+    </div>
+    <div>
+        <a href="" onclick="logOut()">Log Out</a>
+    </div>`
+}
+
 
 
 
