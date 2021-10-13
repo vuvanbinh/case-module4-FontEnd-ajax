@@ -221,7 +221,8 @@
                         '<div><a href="" onclick="reloadPage()">Quay lại danh sách lớp</a></div> <br>' +
                         '<div>\n' +
                         '    <label for="status">Chọn trạng thái hiển thị:</label>\n' +
-                        '    <select onchange="showPageListStudentByStatus(window.sessionStorage.getItem(`CLASSES_ID`))" id="status">\n' +
+                        '    <select class="form-select" aria-label="Default select example"' +
+                        'onchange="showPageListStudentByStatus(window.sessionStorage.getItem(`CLASSES_ID`))" id="status">\n' +
                         '        <option>----</option>\n' +
                         '        <option value="all">Tất cả</option>\n' +
                         '        <option value="Đang học">Đang học</option>\n' +
@@ -230,17 +231,8 @@
                         '        <option value="Thôi học">Thôi học</option>\n' +
                         '    </select>\n' +
                         '</div>' +
-                        ' <br>' +
-                        '<table width="50%" border="1px">\n' +
-                        '        <thead>\n' +
-                        '        <tr>\n' +
-                        '            <th>STT</th>\n' +
-                        '            <th>Ảnh</th>\n' +
-                        '            <th>Họ tên</th>\n' +
-                        '        </tr>\n' +
-                        '        </thead>\n' +
+                        '<table width="50%" class="table">\n' +
                         '        <tbody>';
-
                     let pageStart = (pagination.pageNumber - 1) * pagination.pageSize;
                     let pageEnd = pageStart + pagination.pageSize;
                     let pageItems = response.slice(pageStart, pageEnd);
@@ -248,9 +240,11 @@
                         let indexs = index + 1;
                         result +=
                             `<tr>
-                                <td>${indexs}</td>
-                                <td><img src="${item.avatar}" alt="" width="120" height="120"></td>
-                                <td><a href="" onclick="showStudentDetail(${item.id})">${item.fullName}</a></td>
+                                <td>${indexs}
+                                <br>
+                                <img src="${item.avatar}" alt="" width="120" height="120"><br>
+                                <a href="" onclick="showStudentDetail(${item.id})">${item.fullName}</a>
+                                </td>
                             </tr>`
                     })
                     result += "  </tbody>\n" +
@@ -275,30 +269,39 @@
 <a href="" onclick="showListStudentByClassId(${window.sessionStorage.getItem('CLASSES_ID')})">Quay lại danh sách học sinh</a>
 <br>
     <fieldset style="width: 50%">
-        <legend>Information</legend>
-        <table>
+        <legend>Information:</legend>
+        <table class="table">
             <tr>
+                <td></td>
                 <td>
                  <img src="${data.avatar}"
                      alt="" width="330" height="250">
                 </td>
             </tr>
             <tr>
-                <td>${data.fullName}</td>
+                <td></td>
+                <td>
+                    Họ tên:<strong>${data.fullName}</strong>
+                </td>
             </tr>
             <tr>
-                <td>${data.email}</td>
+                <td></td>
+                <td>Email: <strong>${data.email}</strong></td>
             </tr>
             <tr>
-                <td>${data.phoneNumber}</td>
+                <td></td>
+                <td>Phone number: <strong>${data.phoneNumber}</strong></td>
             </tr>
             <tr>
-                <td>${data.address}</td>
+                <td></td>
+                <td>Address:<strong>${data.address}</strong></td>
             </tr>
             <tr>
-                <td>${data.status}</td>
+                <td></td>
+                <td>Status: <strong>${data.status}</strong></td>
             </tr>
             <tr>
+                <td></td>
                 <td><a href="" onclick="showDiaryForm(${data.id},'studentDiary')">Viết nhật ký cho ${data.fullName}</a></td>
             </tr>
         </table>
@@ -326,7 +329,6 @@
             }
         })
     }
-
 
     function reloadPage() {
         location.reload();

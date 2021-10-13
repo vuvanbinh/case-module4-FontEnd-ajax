@@ -10,7 +10,6 @@ const firebaseConfig = {
 };
 firebase.initializeApp(firebaseConfig);
 
-console.log('---------------')
 var image = '';
 // firebase bucket name
 // REPLACE WITH THE ONE YOU CREATE

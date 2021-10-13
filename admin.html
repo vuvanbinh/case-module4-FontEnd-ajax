@@ -76,16 +76,16 @@
             `<div style="width: 60%;padding-left: 30px">
     <form>
         <div class="mb-3">
-            <label for="classes" class="form-label">Class:</label>
+            <label for="classes" class="form-label"><b>Class:</b></label>
             <select class="form-select" aria-label="Default select example"
                     onchange="showStudentByClassesId()" id="classes"></select>
         </div>
         <div class="mb-3">
-            <label for="users" class="form-label">Student:</label>
+            <label for="users" class="form-label"><b>Student:</b></label>
             <select class="form-select" aria-label="Default select example" id="users"></select>
         </div>
         <div class="mb-3">
-            <label for="dotDog" class="form-label">DotDog:</label>
+            <label for="dotDog" class="form-label"><b>DotDog:</b></label>
             <select class="form-select" aria-label="Default select example" id="dotDog">
                 <option value="Đợt 1">Đợt 1</option>
                 <option value="Đợt 2">Đợt 2</option>
@@ -96,15 +96,15 @@
             </select>
         </div>
         <div class="mb-3">
-            <label for="dayDog" class="form-label">DayDog:</label>
+            <label for="dayDog" class="form-label"><b>DayDog:</b></label>
             <input type="date" class="form-control" id="dayDog">
         </div>
         <div class="mb-3">
-            <label for="money" class="form-label">Money:</label>
+            <label for="money" class="form-label"><b>Money:</b></label>
             <input type="number" class="form-control" id="money">
         </div>
         <div class="mb-3">
-            <label for="status" class="form-label">Status:</label>
+            <label for="status" class="form-label"><b>Status:</b></label>
             <select class="form-select" aria-label="Default select example" id="status">
                 <option >--Chọn--</option>
                 <option value="Chưa đóng">Chưa đóng</option>
@@ -160,31 +160,34 @@
 <div style="width: 60%;padding-left: 30px">
     <form>
         <div class="mb-3">
-            <label for="fullName" class="form-label">Full name:</label>
+        <span style="font-size: 25px;color: red" id="error"></span>
+        </div>
+        <div class="mb-3">
+            <label for="fullName" class="form-label"><b>Full name:</b></label>
             <input type="text" class="form-control" id="fullName">
         </div>
         <div class="mb-3">
-            <label for="email" class="form-label">Email:</label>
+            <label for="email" class="form-label"><b>Email:</b></label>
             <input type="email" class="form-control" id="email">
         </div>
         <div class="mb-3">
-            <label for="password" class="form-label">Password:</label>
+            <label for="password" class="form-label"><b>Email:</b></label>
             <input type="password" class="form-control" id="password">
         </div>
         <div class="mb-3">
-            <label for="phoneNumber" class="form-label">Phone number:</label>
+            <label for="phoneNumber" class="form-label"><b>Phone number:</b></label>
             <input type="number" class="form-control" id="phoneNumber">
         </div>
         <div class="mb-3">
-            <label for="address" class="form-label">Address:</label>
+            <label for="address" class="form-label"><b>Address:</b></label>
             <input type="text" class="form-control" id="address">
         </div>
         <div class="mb-3">
-            <label for="dob" class="form-label">Date of birth:</label>
+            <label for="dob" class="form-label"><b>Date of birth:</b></label>
             <input type="date" class="form-control" id="dob">
         </div>
         <div class="mb-3">
-            <label for="status" class="form-label">Status:</label>
+            <label for="status" class="form-label"><b>Status:</b></label>
             <select class="form-select" aria-label="Default select example" id="status">
                 <option selected>Open this select menu</option>
                 <option value="Đang học">Đang học</option>
@@ -194,7 +197,7 @@
             </select>
         </div>
         <div class="mb-3">
-            <label for="role" class="form-label">Role:</label>
+            <label for="role" class="form-label"><b>Role:</b></label>
             <select class="form-select" aria-label="Default select example" id="role">
                 <option selected>Open this select menu</option>
                 <option value="coach">Coach</option>
@@ -204,11 +207,15 @@
             </select>
         </div>
         <div class="mb-3">
-            <label for="avatar" class="form-label">Avatar:</label>
-            <input type="file" class="form-control" id="avatar">
+            <label for="avatar" class="form-label"><b>Avatar:</b></label>
+            <span class="input-group-text">Image</span>
+                <progress value="0" max="100" id="uploader">0%</progress>
+                <input type="file" value="upload" accept=".jpg" id="fileButton">
+                <div id="imgDiv"></div>
+<!--            <input type="file" class="form-control" id="avatar">-->
         </div>
         <div class="mb-3">
-            <label for="classes" class="form-label">Class:</label>
+            <label for="classes" class="form-label"><b>Class:</b></label>
             <select class="form-select" aria-label="Default select example" multiple id="classes"></select>
         </div>
         <button type="submit" class="btn btn-primary" onclick="addNewUser()">Submit</button>
@@ -221,8 +228,20 @@
     function addNewUser() {
         event.preventDefault();
         let fullName = $('#fullName').val();
+        if (fullName===''){
+            document.getElementById("error").innerText="Please enter your full name!"
+            return false;
+        }
         let email = $('#email').val();
+        if (email===''){
+            document.getElementById("error").innerText="Please enter your Email!"
+            return false;
+        }
         let passWord = $('#password').val();
+        if (passWord.length<6){
+            document.getElementById("error").innerText="Please enter your password, **Password length must be atleast 8 characters!"
+            return false;
+        }
         let phoneNumber = $('#phoneNumber').val();
         let address = $('#address').val();
         let dob = $('#dob').val();
@@ -298,7 +317,7 @@
 <div style="width: 60%;padding-left: 30px">
     <form>
         <div class="mb-3">
-            <label for="subjectName" class="form-label">Class Name:</label>
+            <label for="subjectName" class="form-label"><b>Class Name:</b></label>
             <input type="text" class="form-control" id="classesName" aria-describedby="emailHelp">
         </div>
         <button type="submit" class="btn btn-primary" onclick="addNewClasses()">Submit</button>
@@ -339,7 +358,7 @@
 <div style="width: 60%;padding-left: 30px">
     <form>
         <div class="mb-3">
-            <label for="subjectName" class="form-label">Subject Name:</label>
+            <label for="subjectName" class="form-label"><b>Subject Name:</b></label>
             <input type="text" class="form-control" id="subjectName" aria-describedby="emailHelp">
         </div>
         <button type="submit" class="btn btn-primary" onclick="addNewSubject()">Submit</button>
